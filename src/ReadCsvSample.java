@@ -1,11 +1,21 @@
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ReadCsvSample {
 
+    /**
+     * メインクラス
+     * @param args
+     */
     public static void main(String[] args) {
         readCsv();
     }
 
+    /**
+     * CSV ファイルを読み込むだけの処理
+     */
     private static void readCsv() {
 
         String csvFile = "text.csv";
@@ -13,18 +23,21 @@ public class ReadCsvSample {
         String[] list = null;
 
         filePath = getCsvFile(csvFile);
-        if (filePath != ""){
-//            readFileStream(filePath);
-            list = reacCsvLines(filePath);
+        if (filePath != "") {
+            try {
+                System.out.println(readAll(filePath));
+
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
         }
-
-        for (String line : list) {
-            System.out.println(line);
-        }
-
-
     }
 
+    /**
+     * 対象のCSVファイルを取得する
+     * @param csvFile
+     * @return ファイルパス
+     */
     private static String getCsvFile(String csvFile) {
 
         String filePath = "";
@@ -39,68 +52,14 @@ public class ReadCsvSample {
         return filePath;
     }
 
-    private static void readFileStream(String filePath) {
-
-        try {
-
-            FileInputStream in = null;
-            InputStreamReader is = null;
-            BufferedReader br = null;
-
-            in = new FileInputStream(filePath);
-            is = new InputStreamReader(in);
-            br = new BufferedReader(is);
-
-            String line = "";
-
-            // 1行ずつ読み込み
-            while ((line = br.readLine()) !=  null) {
-
-                System.out.println(line);
-            }
-
-        } catch (IOException e) {
-            System.out.println(e.toString());
-
-        }
+    /**
+     * 高速にテキストを読み込む
+     * @param path  ファイルパス
+     * @return ファイル文字列
+     * @throws IOException
+     */
+    private static String readAll(final String path) throws IOException {
+        return String.join(System.getProperty("line.separator"),
+                Files.readAllLines(Paths.get(path), Charset.forName("UTF-8")));
     }
-
-
-    private static String[] reacCsvLines(String filePath) {
-
-        String[] list = null;
-        int lineCount = 0;
-        int i = 0;
-        try {
-
-            FileInputStream in = null;
-            InputStreamReader is = null;
-            BufferedReader br = null;
-
-            in = new FileInputStream(filePath);
-            is = new InputStreamReader(in);
-            br = new BufferedReader(is);
-
-            String line = "";
-
-            // 1行ずつ読み込み
-            while ((line = br.readLine()) !=  null) {
-                lineCount++;
-            }
-
-            list = new String[lineCount];
-
-            while ((line = br.readLine()) !=  null) {
-                list[i] = String.join(line);
-                i++;
-            }
-
-        } catch (IOException e) {
-            System.out.println(e.toString());
-
-        }
-        return list;
-    }
-
-
 }
